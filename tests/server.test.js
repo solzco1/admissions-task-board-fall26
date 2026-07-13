@@ -1,4 +1,4 @@
-import { describe, it, before, after } from 'node:test';
+import { describe, it, before, after, beforeEach } from 'node:test';
 import assert from 'node:assert/strict';
 
 describe('PATCH /api/tasks/:id', () => {
@@ -32,5 +32,45 @@ describe('PATCH /api/tasks/:id', () => {
     const body = await res.json();
     assert.equal(body.task.title, 'Test');
     assert.equal(body.task.completed, true);
+  });
+});
+
+describe('DELETE /api/tasks/:id', () => {
+  let server;
+  let port;
+
+  before(async () => {
+    const { app } = await import('../src/server.js');
+    await new Promise((resolve) => {
+      server = app.listen(0, resolve);
+    });
+    port = server.address().port;
+  });
+
+  after(async () => {
+    await new Promise((resolve, reject) => server.close((err) => (err ? reject(err) : resolve())));
+  });
+
+  beforeEach(async () => {
+    const { _resetForTests } = await import('../src/store.js');
+    _resetForTests();
+  });
+
+  it('deletes a task and returns 204', async () => {
+    await fetch(`http://127.0.0.1:${port}/api/tasks`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title: 'Remove me' }),
+    });
+    const res = await fetch(`http://127.0.0.1:${port}/api/tasks/1`, { method: 'DELETE' });
+    assert.equal(res.status, 204);
+    const list = await fetch(`http://127.0.0.1:${port}/api/tasks`);
+    const body = await list.json();
+    assert.equal(body.tasks.length, 0);
+  });
+
+  it('returns 404 when deleting a missing task', async () => {
+    const res = await fetch(`http://127.0.0.1:${port}/api/tasks/999`, { method: 'DELETE' });
+    assert.equal(res.status, 404);
   });
 });
