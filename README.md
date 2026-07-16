@@ -1,39 +1,68 @@
-# Fix the repo (Admissions take-home)
+# Cohort PM — Hult Developer Program
 
-**Time limit:** 48 hours from receipt of link.
+Project management platform for the Hult Cohort Developer Program Summer Pilot 2026. Built on the admissions task board foundation, extended with accounts, projects, task assignments, status workflows, and motivation features.
 
-Clone this repo, fix the bugs, implement the missing feature, and open a PR using the template below.
+## Stack
 
-## Task
+- **Frontend:** Next.js 14 (App Router) + Tailwind CSS
+- **Backend / Auth / DB:** Supabase (PostgreSQL + Auth)
+- **Hosting:** Vercel (`*.vercel.app`)
 
-This is a miniature task board API. It should:
+## Features
 
-1. Return tasks from `GET /api/tasks`
-2. Create tasks via `POST /api/tasks` with `{ "title": "..." }`
-3. Mark tasks complete via `PATCH /api/tasks/:id` with `{ "completed": true }`
+- User authentication (sign up / log in)
+- Projects with member access
+- Task CRUD with assignee support
+- Kanban status columns: **To Do → In Progress → Done**
+- Progress bars per project
+- **Latest Activity** feed when cohort members complete work
 
-Currently **3 bugs** prevent correct behavior and **1 feature** is missing (optional — pass requires all bugs fixed + green tests; DELETE earns strong pass).
-
-## Setup
+## Setup (fresh clone)
 
 ```bash
+git clone https://github.com/solzco1/admissions-task-board-fall26.git
+cd admissions-task-board-fall26
 npm install
-npm test        # some tests fail until you fix bugs
-npm run dev     # http://localhost:3000
+cp .env.example .env.local
+# Fill in NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY
+npm run dev
 ```
 
-## Submit
+Open [http://localhost:3000](http://localhost:3000).
 
-1. Fork or branch: `admissions/{your-github-handle}`
-2. Open PR against `main` with title: `[Admissions] Fix task board — {your handle}`
-3. Fill the PR template completely
-4. Include **Agent usage** section — which agents you used
+### Supabase setup
 
-## We evaluate
+1. Create a project at [supabase.com](https://supabase.com)
+2. Run the SQL in `supabase/schema.sql` in the Supabase SQL Editor
+3. Copy your project URL and anon key into `.env.local`
+4. In Supabase Auth settings, disable email confirmation for local dev (optional)
 
-- PR is mergeable (or close with notes)
-- You explored the repo (not a blind paste)
-- Tests pass
-- PR description shows you understand what you changed
+### Deploy to Vercel
 
-Good luck — this is the same loop as the program itself.
+1. Push to GitHub and import the repo in Vercel
+2. Add `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` as environment variables
+3. Deploy — Vercel provides the production HTTPS URL
+
+## Scripts
+
+| Command       | Description              |
+|---------------|--------------------------|
+| `npm run dev` | Start dev server         |
+| `npm run build` | Production build       |
+| `npm test`    | Run unit tests           |
+| `npm start`   | Start production server  |
+
+## Known limitations
+
+- MVP focuses on core CRUD for tasks and projects
+- No push notifications or real-time mobile updates
+- No email notifications
+- Project membership is owner-only (no invite flow yet)
+
+## Legacy admissions API
+
+The original Express task board API lives in `legacy/` for reference. It was the starting point for this project.
+
+## Agent usage
+
+Built with Cursor AI Composer for architecture, Supabase integration, UI implementation, and test coverage.
