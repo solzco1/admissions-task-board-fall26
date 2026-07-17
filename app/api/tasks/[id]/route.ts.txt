@@ -1,0 +1,17 @@
+import { NextResponse } from 'next/server';
+import { updateTask, deleteTask } from '../../../../src/store.js';
+
+export async function PATCH(req: Request, { params }: { params: { id: string } }) {
+  const id = Number(params.id);
+  const { completed } = await req.json();
+  const task = updateTask(id, { completed });
+  if (!task) return NextResponse.json({ error: 'not found' }, { status: 404 });
+  return NextResponse.json({ task });
+}
+
+export async function DELETE(req: Request, { params }: { params: { id: string } }) {
+  const id = Number(params.id);
+  const deleted = deleteTask(id);
+  if (!deleted) return NextResponse.json({ error: 'not found' }, { status: 404 });
+  return new NextResponse(null, { status: 204 });
+}
