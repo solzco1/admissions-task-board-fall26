@@ -40,7 +40,7 @@ export default async function ProjectPage({ params }: { params: { id: string } }
     .limit(20);
 
   const memberProfiles = (members ?? [])
-    .map((m) => m.profile as Profile | null)
+   .map((m) => m.profile as unknown as Profile | null)
     .filter(Boolean) as Profile[];
 
   const progress = computeProgress((tasks ?? []) as Task[]);
