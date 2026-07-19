@@ -38,7 +38,7 @@ export default async function DashboardPage() {
 
   const progressByProject = projectIds.reduce<Record<string, number>>((acc, id) => {
     const tasks = taskCounts?.filter((t) => t.project_id === id) ?? [];
-    acc[id] = computeProgress(tasks);
+    acc[id] = computeProgress(tasks as any);
     return acc;
   }, {});
 
