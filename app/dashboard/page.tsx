@@ -75,7 +75,7 @@ export default async function DashboardPage() {
             ) : (
               <div className="grid gap-4 sm:grid-cols-2">
                 {projects.map((project) => {
-                  const p = project as { id: string; name: string; description: string | null };
+                  const p = project as unknown as { id: string; name: string; description: string | null };
                   const progress = progressByProject[p.id] ?? 0;
                   return (
                     <Link
