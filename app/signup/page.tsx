@@ -2,12 +2,17 @@ import Link from 'next/link';
 import { signUp } from '@/app/actions';
 
 export default function SignUpPage() {
+  async function handleFormAction(formData: FormData) {
+    "use server";
+    await signUp(formData);
+  }
+
   return (
     <div className="flex min-h-screen items-center justify-center px-4">
       <div className="card w-full max-w-md">
         <h1 className="mb-1 text-2xl font-bold">Join Cohort PM</h1>
         <p className="mb-6 text-sm text-slate-600">Create an account to start tracking work</p>
-        <form action={signUp} className="space-y-4">
+        <form action={handleFormAction} className="space-y-4">
           <div>
             <label htmlFor="displayName" className="mb-1 block text-sm font-medium">
               Display name

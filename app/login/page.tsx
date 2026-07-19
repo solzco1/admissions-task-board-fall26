@@ -2,12 +2,17 @@ import Link from 'next/link';
 import { signIn } from '@/app/actions';
 
 export default function LoginPage() {
+  async function handleFormAction(formData: FormData) {
+    "use server";
+    await signIn(formData);
+  }
+
   return (
     <div className="flex min-h-screen items-center justify-center px-4">
       <div className="card w-full max-w-md">
         <h1 className="mb-1 text-2xl font-bold">Welcome back</h1>
         <p className="mb-6 text-sm text-slate-600">Log in to your Cohort PM account</p>
-        <form action={signIn} className="space-y-4">
+        <form action={handleFormAction} className="space-y-4">
           <div>
             <label htmlFor="email" className="mb-1 block text-sm font-medium">
               Email
