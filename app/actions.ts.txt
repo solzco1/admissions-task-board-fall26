@@ -1,0 +1,7 @@
+"use server";
+
+export async function handleLogin(formData: FormData) {
+  // Your logic here (e.g., calling Supabase, validating credentials)
+  const email = formData.get("email");
+  // ... perform database operations
+}
