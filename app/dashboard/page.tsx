@@ -33,7 +33,7 @@ export default async function DashboardPage() {
       .in('project_id', projectIds)
       .order('created_at', { ascending: false })
       .limit(10);
-    recentActivity = activities;
+      recentActivity = activities || [];
   }
 
   const progressByProject = projectIds.reduce<Record<string, number>>((acc, id) => {
