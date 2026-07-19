@@ -108,7 +108,7 @@ export default async function DashboardPage() {
 
           <section className="card">
             <h2 className="mb-4 font-semibold">New project</h2>
-            <form action={createProject} className="space-y-3">
+            <form action={async (formData) => { await createProject(formData); }} className="space-y-3">
               <input name="name" placeholder="Project name" required className="input-field" />
               <textarea
                 name="description"
