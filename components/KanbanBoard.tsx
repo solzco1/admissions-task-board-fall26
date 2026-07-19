@@ -38,7 +38,7 @@ export function KanbanBoard({ tasks, projectId, members }: Props) {
             </span>
           </div>
           <div className="space-y-3">
-            {grouped[column.id].map((task) => (
+          {grouped[column.id].map((task: any) => (
               <div key={task.id} className="rounded-lg border border-slate-200 bg-white p-3 shadow-sm">
                 <p className="mb-2 font-medium text-slate-900">{task.title}</p>
                 {task.description && (
