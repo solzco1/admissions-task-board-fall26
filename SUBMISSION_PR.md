@@ -4,8 +4,7 @@ Cohort PM — a Next.js + Supabase project management platform extending the adm
 
 ## Production URL
 
-<!-- Fill after Vercel deploy -->
-_TBD — deploy to Vercel and paste `https://*.vercel.app` URL here_
+https://admissions-task-board-fall26.vercel.app
 
 ## Setup steps verified on fresh clone
 

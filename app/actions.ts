@@ -22,23 +22,29 @@ async function logActivity(
   });
 }
 
-export async function signUp(formData: FormData) {
+export async function signUp(_prev: { error?: string } | undefined, formData: FormData) {
   const supabase = await createClient();
   const email = String(formData.get('email') ?? '');
   const password = String(formData.get('password') ?? '');
   const displayName = String(formData.get('displayName') ?? '');
 
-  const { error } = await supabase.auth.signUp({
+  const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: { data: { display_name: displayName } },
   });
 
   if (error) return { error: error.message };
+  if (!data.session) {
+    return {
+      error:
+        'Account created. Confirm your email if required, then log in. (Disable email confirmation in Supabase Auth for instant access.)',
+    };
+  }
   redirect('/dashboard');
 }
 
-export async function signIn(formData: FormData) {
+export async function signIn(_prev: { error?: string } | undefined, formData: FormData) {
   const supabase = await createClient();
   const email = String(formData.get('email') ?? '');
   const password = String(formData.get('password') ?? '');
@@ -54,7 +60,7 @@ export async function signOut() {
   redirect('/');
 }
 
-export async function createProject(formData: FormData) {
+export async function createProject(_prev: { error?: string } | undefined, formData: FormData) {
   const supabase = await createClient();
   const {
     data: { user },
@@ -92,6 +98,7 @@ export async function createTask(formData: FormData) {
 
   const projectId = String(formData.get('projectId') ?? '');
   const title = String(formData.get('title') ?? '').trim();
+  const description = String(formData.get('description') ?? '').trim() || null;
   const assigneeId = String(formData.get('assigneeId') ?? '') || null;
   if (!title) return { error: 'Task title required' };
 
@@ -100,6 +107,7 @@ export async function createTask(formData: FormData) {
     .insert({
       project_id: projectId,
       title,
+      description,
       assignee_id: assigneeId,
       created_by: user.id,
       status: 'todo',

@@ -129,13 +129,21 @@ create policy "Owners can delete projects"
   on public.projects for delete to authenticated
   using (owner_id = auth.uid());
 
--- Project members
-create policy "Members can view project membership"
+-- Project members (no self-referential policy — avoids RLS recursion)
+drop policy if exists "Members can view project membership" on public.project_members;
+drop policy if exists "View own project membership" on public.project_members;
+drop policy if exists "Owners view all project members" on public.project_members;
+
+create policy "View own project membership"
+  on public.project_members for select to authenticated
+  using (user_id = auth.uid());
+
+create policy "Owners view all project members"
   on public.project_members for select to authenticated
   using (
     exists (
-      select 1 from public.project_members pm
-      where pm.project_id = project_members.project_id and pm.user_id = auth.uid()
+      select 1 from public.projects p
+      where p.id = project_members.project_id and p.owner_id = auth.uid()
     )
   );
 

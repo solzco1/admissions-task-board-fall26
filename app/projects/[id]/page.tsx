@@ -9,6 +9,8 @@ import { CreateTaskForm } from '@/components/CreateTaskForm';
 import { computeProgress } from '@/lib/tasks.js';
 import type { Task, Profile } from '@/lib/types';
 
+export const dynamic = 'force-dynamic';
+
 export default async function ProjectPage({ params }: { params: { id: string } }) {
   const { id } = params;
   const supabase = await createClient();
@@ -27,11 +29,6 @@ export default async function ProjectPage({ params }: { params: { id: string } }
     .eq('project_id', id)
     .order('created_at', { ascending: true });
 
-  const { data: members } = await supabase
-    .from('project_members')
-    .select('user_id, profile:profiles(id, email, display_name)')
-    .eq('project_id', id);
-
   const { data: activities } = await supabase
     .from('activities')
     .select('*, profile:profiles(display_name, email), task:tasks(title)')
@@ -39,9 +36,12 @@ export default async function ProjectPage({ params }: { params: { id: string } }
     .order('created_at', { ascending: false })
     .limit(20);
 
-  const memberProfiles = (members ?? [])
-   .map((m) => m.profile as unknown as Profile | null)
-    .filter(Boolean) as Profile[];
+  const { data: cohortMembers } = await supabase
+    .from('profiles')
+    .select('id, email, display_name, created_at')
+    .order('display_name');
+
+  const assignees = (cohortMembers ?? []) as Profile[];
 
   const progress = computeProgress((tasks ?? []) as Task[]);
 
@@ -72,11 +72,11 @@ export default async function ProjectPage({ params }: { params: { id: string } }
 
         <div className="grid gap-8 lg:grid-cols-4">
           <div className="lg:col-span-3 space-y-6">
-            <CreateTaskForm projectId={id} members={memberProfiles} />
+            <CreateTaskForm projectId={id} members={assignees} />
             <KanbanBoard
               tasks={(tasks ?? []) as Task[]}
               projectId={id}
-              members={memberProfiles}
+              members={assignees}
             />
           </div>
           <aside>

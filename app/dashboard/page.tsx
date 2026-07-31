@@ -1,8 +1,11 @@
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
-import { signOut, createProject } from '@/app/actions';
+import { signOut } from '@/app/actions';
 import { computeProgress } from '@/lib/tasks.js';
 import { ActivityFeed } from '@/components/ActivityFeed';
+import { CreateProjectForm } from '@/components/CreateProjectForm';
+
+export const dynamic = 'force-dynamic';
 
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -108,18 +111,7 @@ export default async function DashboardPage() {
 
           <section className="card">
             <h2 className="mb-4 font-semibold">New project</h2>
-            <form action={async (formData) => { await createProject(formData); }} className="space-y-3">
-              <input name="name" placeholder="Project name" required className="input-field" />
-              <textarea
-                name="description"
-                placeholder="Description (optional)"
-                rows={2}
-                className="input-field"
-              />
-              <button type="submit" className="btn-primary">
-                Create project
-              </button>
-            </form>
+            <CreateProjectForm />
           </section>
         </div>
 

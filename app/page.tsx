@@ -1,17 +1,28 @@
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
+import { isSupabaseConfigured } from '@/lib/supabase/env';
 import { redirect } from 'next/navigation';
 
 export default async function HomePage() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  if (isSupabaseConfigured()) {
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
 
-  if (user) redirect('/dashboard');
+    if (user) redirect('/dashboard');
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-brand-50 via-white to-slate-100">
+      {!isSupabaseConfigured() && (
+        <div className="border-b border-amber-200 bg-amber-50 px-6 py-3 text-center text-sm text-amber-900">
+          Supabase env vars are missing on this deploy. Add{' '}
+          <code className="rounded bg-amber-100 px-1">NEXT_PUBLIC_SUPABASE_URL</code> and{' '}
+          <code className="rounded bg-amber-100 px-1">NEXT_PUBLIC_SUPABASE_ANON_KEY</code> in
+          Vercel, then redeploy.
+        </div>
+      )}
       <header className="mx-auto flex max-w-5xl items-center justify-between px-6 py-6">
         <span className="text-lg font-semibold text-brand-700">Cohort PM</span>
         <div className="flex gap-3">
